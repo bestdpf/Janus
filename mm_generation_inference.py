@@ -108,7 +108,7 @@ def generate(
     visual_img = np.zeros((parallel_size, img_size, img_size, 3), dtype=np.uint8)
     visual_img[:, :, :] = dec
 
-    os.makedirs('generated_samples', exist_ok=True)
+    os.makedirs('generated_samples_mm', exist_ok=True)
     for i in range(parallel_size):
         save_path = os.path.join('generated_samples_mm', "img_{}.jpg".format(i))
         PIL.Image.fromarray(visual_img[i]).save(save_path)
