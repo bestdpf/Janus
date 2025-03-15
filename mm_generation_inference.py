@@ -110,7 +110,7 @@ def generate(
     visual_img = np.zeros((parallel_size, img_size, img_size, 3), dtype=np.uint8)
     visual_img[:, :, :] = dec
 
-    date = int(datetime.datetime.timestamp()*1000)
+    date = int(datetime.datetime.now().timestamp()*1000)
     os.makedirs('generated_samples_mm', exist_ok=True)
     for i in range(parallel_size):
         save_path = os.path.join('generated_samples_mm', "img_{}_{}.jpg".format(i, date))
