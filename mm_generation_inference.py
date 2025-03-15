@@ -16,6 +16,7 @@
 # COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+import datetime
 
 import torch
 from transformers import AutoModelForCausalLM
@@ -40,8 +41,9 @@ vl_gpt = vl_gpt.to(torch.bfloat16).cuda().eval()
 conversation = [
     {
         "role": "User",
-        "content": "replace the face in <image_placeholder> by face in <image_placeholder>.",
-        "images": ["images/liuyifei.png", "images/xi.png"],
+        "content": "<image_placeholder> add a green hat for the girl in the photo",
+        # "images": ["images/liuyifei.png", "images/xi.png"],
+        "images": ["images/liuyifei.png"],
     },
     {"role": "Assistant", "content": "" + vl_chat_processor.image_start_tag},
 ]
@@ -108,9 +110,10 @@ def generate(
     visual_img = np.zeros((parallel_size, img_size, img_size, 3), dtype=np.uint8)
     visual_img[:, :, :] = dec
 
+    date = int(datetime.datetime.timestamp()*1000)
     os.makedirs('generated_samples_mm', exist_ok=True)
     for i in range(parallel_size):
-        save_path = os.path.join('generated_samples_mm', "img_{}.jpg".format(i))
+        save_path = os.path.join('generated_samples_mm', "img_{}_{}.jpg".format(i, date))
         PIL.Image.fromarray(visual_img[i]).save(save_path)
 
 
