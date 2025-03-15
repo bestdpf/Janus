@@ -218,6 +218,7 @@ class MultiModalityCausalLM(MultiModalityPreTrainedModel):
         language_config = config.language_config
         self.language_model = LlamaForCausalLM(language_config)
 
+
     def prepare_inputs_embeds(
         self,
         input_ids: torch.LongTensor,
@@ -255,9 +256,15 @@ class MultiModalityCausalLM(MultiModalityPreTrainedModel):
         inputs_embeds = self.language_model.get_input_embeddings()(input_ids)
 
         # replace with the image embeddings
-        inputs_embeds[images_seq_mask] = images_embeds[images_emb_mask]
+        if inputs_embeds.shape[0] > images_embeds.shape[0]:
+            mul_n = inputs_embeds.shape[0] // images_embeds.shape[0]
+            inputs_embeds[images_seq_mask.repeat_interleave(mul_n, dim=0)] = images_embeds[
+                images_emb_mask].repeat_interleave(mul_n, dim=0)
+        else:
+            inputs_embeds[images_seq_mask] = images_embeds[images_emb_mask]
 
         return inputs_embeds
+
 
     def prepare_gen_img_embeds(self, image_ids: torch.LongTensor):
         return self.gen_aligner(self.gen_embed(image_ids))
