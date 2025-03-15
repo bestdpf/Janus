@@ -26,7 +26,7 @@ import os
 import PIL.Image
 
 # specify the path to the model
-model_path = "deepseek-ai/Janus-Pro-7B"
+model_path = "../Janus-Pro-7B"
 vl_chat_processor: VLChatProcessor = VLChatProcessor.from_pretrained(model_path)
 tokenizer = vl_chat_processor.tokenizer
 
