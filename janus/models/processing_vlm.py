@@ -298,6 +298,7 @@ class VLChatProcessor(ProcessorMixin):
         # tokenize
         input_ids = self.tokenizer.encode(sft_format)
         input_ids = torch.LongTensor(input_ids)
+        print(f'internal input {input_ids} {sft_format}')
 
         # add image tokens to the input_ids
         image_token_mask: torch.BoolTensor = input_ids == self.image_id
