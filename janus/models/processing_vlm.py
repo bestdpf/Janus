@@ -174,6 +174,7 @@ class VLChatProcessor(ProcessorMixin):
             conv.append_message(message["role"], message["content"].strip())
         sft_prompt = conv.get_prompt().strip()
 
+        print(f'sft {conversations} {sft_format} {sft_prompt}')
         return sft_prompt
 
     @property
