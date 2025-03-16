@@ -41,7 +41,7 @@ vl_gpt = vl_gpt.to(torch.bfloat16).cuda().eval()
 conversation = [
     {
         "role": "User",
-        "content": "add a green hat for the girl in the photo <image_placeholder>",
+        "content": "add a green hat <image_placeholder>",
         # "images": ["images/liuyifei.png", "images/xi.png"],
         "images": ["images/liuyifei.png"],
     },
