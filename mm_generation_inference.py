@@ -45,7 +45,7 @@ conversation = [
         # "images": ["images/liuyifei.png", "images/xi.png"],
         "images": ["images/liuyifei.png"],
     },
-    {"role": "Assistant", "content": ""},
+    {"role": "Assistant", "content": "" + vl_chat_processor.image_start_tag},
 ]
 
 # load images and prepare for inputs

@@ -84,10 +84,10 @@ class Conversation:
             else:
                 ret = system_prompt + seps[0]
             for i, (role, message) in enumerate(self.messages):
-                if message:
+                if i < len(self.messages) - 1:
                     ret += role + ": " + message + seps[i % 2]
                 else:
-                    ret += role + ":"
+                    ret += role + ":" + message
             return ret
         elif self.sep_style == SeparatorStyle.LLAMA2:
             seps = [self.sep, self.sep2]
