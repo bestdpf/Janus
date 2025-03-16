@@ -250,7 +250,7 @@ class MultiModalityCausalLM(MultiModalityPreTrainedModel):
         print(f'quant size {img_quant.shape}')
         # [1, 8, 24, 24] (b*n, n_dim, h/scale_h, w/scale_w)
 
-        img_quant = rearrange(img_quant, "(b n) c h w -> (b n) (h w) c")
+        img_quant = rearrange(img_quant, "b c h w -> b (h w) c")
         print(f'arrange quant size {img_quant.shape}')
 
         # [b x n, T2, D]
