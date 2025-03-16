@@ -79,7 +79,7 @@ def generate(
             tokens[i, 1:-1] = vl_chat_processor.pad_id
     prepare_inputs.input_ids = tokens
 
-    inputs_embeds = vl_gpt.prepare_inputs_embeds(**prepare_inputs)
+    inputs_embeds = vl_gpt.prepare_gen_img_inputs_embeds(**prepare_inputs)
 
     generated_tokens = torch.zeros((parallel_size, image_token_num_per_image), dtype=torch.int).cuda()
 

@@ -219,6 +219,54 @@ class MultiModalityCausalLM(MultiModalityPreTrainedModel):
         self.language_model = LlamaForCausalLM(language_config)
 
 
+    def prepare_gen_img_inputs_embeds(
+        self,
+        input_ids: torch.LongTensor,
+        pixel_values: torch.FloatTensor,
+        images_seq_mask: torch.LongTensor,
+        images_emb_mask: torch.LongTensor,
+        **kwargs,
+    ):
+        """
+
+        Args:
+            input_ids (torch.LongTensor): [b, T]
+            pixel_values (torch.FloatTensor):   [b, n_images, 3, h, w]
+            images_seq_mask (torch.BoolTensor): [b, T]
+            images_emb_mask (torch.BoolTensor): [b, n_images, n_image_tokens]
+
+            assert torch.sum(images_seq_mask) == torch.sum(images_emb_mask)
+
+        Returns:
+            input_embeds (torch.Tensor): [b, T, D]
+        """
+
+        bs, n = pixel_values.shape[0:2]
+        images = rearrange(pixel_values, "b n c h w -> (b n) c h w")
+
+        img_quant, img_loss, img_info = self.gen_vision_model.encode(images)
+        # [b x n, T2, D]
+        images_embeds = self.gen_aligner(img_quant)
+
+        # [b x n, T2, D] -> [b, n x T2, D]
+        images_embeds = rearrange(images_embeds, "(b n) t d -> b (n t) d", b=bs, n=n)
+        # [b, n, T2] -> [b, n x T2]
+        images_emb_mask = rearrange(images_emb_mask, "b n t -> b (n t)")
+
+        # [b, T, D]
+        input_ids[input_ids < 0] = 0  # ignore the image embeddings
+        inputs_embeds = self.language_model.get_input_embeddings()(input_ids)
+
+        # replace with the image embeddings
+        if inputs_embeds.shape[0] > images_embeds.shape[0]:
+            mul_n = inputs_embeds.shape[0] // images_embeds.shape[0]
+            inputs_embeds[images_seq_mask.repeat_interleave(mul_n, dim=0)] = images_embeds[
+                images_emb_mask].repeat_interleave(mul_n, dim=0)
+        else:
+            inputs_embeds[images_seq_mask] = images_embeds[images_emb_mask]
+
+        return inputs_embeds
+
     def prepare_inputs_embeds(
         self,
         input_ids: torch.LongTensor,
