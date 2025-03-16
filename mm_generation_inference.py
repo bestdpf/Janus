@@ -41,7 +41,7 @@ vl_gpt = vl_gpt.to(torch.bfloat16).cuda().eval()
 conversation = [
     {
         "role": "User",
-        "content": "<image_placeholder> add a green hat for the girl in the photo",
+        "content": "add a green hat for the girl in the photo <image_placeholder>",
         # "images": ["images/liuyifei.png", "images/xi.png"],
         "images": ["images/liuyifei.png"],
     },
@@ -110,7 +110,7 @@ def generate(
     visual_img = np.zeros((parallel_size, img_size, img_size, 3), dtype=np.uint8)
     visual_img[:, :, :] = dec
 
-    date = int(datetime.datetime.now().timestamp()*1000)
+    date = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f%z')
     os.makedirs('generated_samples_mm', exist_ok=True)
     for i in range(parallel_size):
         save_path = os.path.join('generated_samples_mm', "img_{}_{}.jpg".format(i, date))
