@@ -244,12 +244,17 @@ class MultiModalityCausalLM(MultiModalityPreTrainedModel):
         bs, n = pixel_values.shape[0:2]
         images = rearrange(pixel_values, "b n c h w -> (b n) c h w")
         print(f'img size is {images.shape}')
+        # [1, 3, 384, 384] (b*n, c, h, w)
 
         img_quant, img_loss, img_info = self.gen_vision_model.encode(images)
         print(f'quant size {img_quant.shape}')
+        # [1, 8, 24, 24] (b*n, n_dim, h/scale_h, w/scale_w)
+
+        img_quant = rearrange(img_quant, "(b n) c h w -> (b n) (h w) c")
+        print(f'arrange quant size {img_quant.shape}')
 
         # [b x n, T2, D]
-        images_embeds = self.aligner(img_quant)
+        images_embeds = self.gen_aligner(img_quant)
 
         print(f'img_emb size {images_embeds.shape}')
 
