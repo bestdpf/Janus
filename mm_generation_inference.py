@@ -45,7 +45,7 @@ conversation = [
         # "images": ["images/liuyifei.png", "images/xi.png"],
         "images": ["images/liuyifei.png"],
     },
-    {"role": "Assistant", "content": "" + vl_chat_processor.image_start_tag},
+    {"role": "Assistant", "content": ""},
 ]
 
 # load images and prepare for inputs
@@ -71,6 +71,8 @@ def generate(
     patch_size: int = 16,
 ):
     input_ids = prepare_inputs.input_ids[0]
+
+    print(f'input ids {input_ids}')
 
     tokens = torch.zeros((parallel_size*2, len(input_ids)), dtype=torch.int).cuda()
     for i in range(parallel_size*2):

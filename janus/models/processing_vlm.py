@@ -174,7 +174,6 @@ class VLChatProcessor(ProcessorMixin):
             conv.append_message(message["role"], message["content"].strip())
         sft_prompt = conv.get_prompt().strip()
 
-        print(f'sft {conversations} {sft_format} {sft_prompt}')
         return sft_prompt
 
     @property
@@ -299,7 +298,6 @@ class VLChatProcessor(ProcessorMixin):
         # tokenize
         input_ids = self.tokenizer.encode(sft_format)
         input_ids = torch.LongTensor(input_ids)
-        print(f'internal input {input_ids} {sft_format}')
 
         # add image tokens to the input_ids
         image_token_mask: torch.BoolTensor = input_ids == self.image_id
