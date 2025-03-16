@@ -17,6 +17,19 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+# import sys
+#
+# if sys.version_info >= (3, 10):
+#     print("Python version is above 3.10, patching the collections module.")
+#     # Monkey patch collections
+#     import collections
+#     import collections.abc
+#
+#     for type_name in collections.abc.__all__:
+#         setattr(collections, type_name, getattr(collections.abc, type_name))
+
+
+
 from typing import Tuple, Union
 
 import torch
@@ -87,6 +100,7 @@ class MlpProjector(nn.Module):
 
 
 if __name__ == "__main__":
+
     cfg = AttrDict(
         input_dim=1024,
         n_embed=2048,
